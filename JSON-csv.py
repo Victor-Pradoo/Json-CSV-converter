@@ -9,9 +9,12 @@
 
 import urllib.request
 import json
+import csv
 
 FII = ["alzr", "bcri", "brcr", "cpff", "cpts", "deva", "habt", "hctr", "hsml", "irdm", "knri", "mgff", "rbff", "rbrf", "recr", "rect",
 "urpr", "vghf", "vgip", "vslh", "xpci", "xplg", "xpml", "xppr"]
+
+csvArq = "resultado.csv"
 
 for i in range (0, len(FII)):
     arq = urllib.request.urlopen(https://api-simple-flask.herokuapp.com/api/FII[i], data= json) #pegando o arquivo na api e atribuindo a arq
@@ -19,5 +22,16 @@ for i in range (0, len(FII)):
         with open(arq, 'r') as a:
             datastore = json.load(a) #lendo arq
 
+        with open(csvArq, 'w') as b:  
+            csvwriter = csv.writer(b)
+                
+            if datastore["valorAtual"]  < datastore["valorPatrimonioPCota"]:
+                status = "COMPRAR";
+            else:
+                status = "AGUARDAR";
+                
+            csvwriter.writerow([FII[i],datastore["dividendYield"], datastore["valorAtual"], datastore["valorPatrimonioPCota"],status]) 
+
+csvwriter.close() 
     #colocar o método que usamos no outro projeto para gravar os dados no csv
 
